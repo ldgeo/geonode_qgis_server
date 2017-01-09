@@ -9,7 +9,8 @@ from geonode_qgis_server.views import (
     map_thumbnail,
     qgis_server_request,
     qgis_server_pdf,
-    qgis_server_map_print
+    qgis_server_map_print,
+    wms_get_feature_info
 )
 
 __author__ = 'ismailsunni'
@@ -71,4 +72,9 @@ urlpatterns = patterns(
         qgis_server_map_print,
         name='qgis-server-map-print'
     ),
+    url(
+        r'^qgis-server/wms_gfi$',
+        wms_get_feature_info,
+        name='qgis-server-getfeatureinfo'
+    )
 )

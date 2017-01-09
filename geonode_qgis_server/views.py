@@ -512,12 +512,15 @@ def wfs_describe_feature_type(params):
         ''.join(result_list).replace('\n', ''), content_type='text/xml')
 
 
-def wms_get_feature_info(params):
+def wms_get_feature_info(request):
     logger.debug('WMS GetFeatureInfo')
 
-    qgis_server = QGIS_SERVER_CONFIG['qgis_server_url']
+    params = dict()
+    for key, value in request.GET.iteritems():
+        params[key] = value
 
-    layer = Layer.objects.get(typename=params.pop('LAYERS'))
+    qgis_server = QGIS_SERVER_CONFIG['qgis_server_url']
+    layer = Layer.objects.get(typename=params['LAYERS'])
     params['LAYERS'] = layer.name
     params['QUERY_LAYERS'] = layer.name
     logger.debug(params['QUERY_LAYERS'])
@@ -541,7 +544,8 @@ def wms_get_feature_info(params):
     result = urllib2.urlopen(url)
     result_list = result.readlines()
     return HttpResponse(
-        ''.join(result_list).replace('\n', ''), content_type='text/xml')
+        ''.join(result_list).replace('\n', ''),
+        content_type=params.get('INFO_FORMAT', 'text/html'))
 
 
 def qgis_server_request(request):
